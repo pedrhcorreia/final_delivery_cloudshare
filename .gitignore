@@ -1,0 +1,65 @@
+# Frontend
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.js
+
+# Frontend testing
+/frontend/coverage
+
+# Frontend production
+/frontend/build
+
+# Frontend misc
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# Backend
+/backend/target/
+/backend/pom.xml.tag
+/backend/pom.xml.releaseBackup
+/backend/pom.xml.versionsBackup
+/backend/release.properties
+/backend/.flattened-pom.xml
+
+# Backend Eclipse
+/backend/.project
+/backend/.classpath
+/backend/.settings/
+/backend/bin/
+
+# Backend IntelliJ
+/backend/.idea
+/backend/*.ipr
+/backend/*.iml
+/backend/*.iws
+
+# Backend NetBeans
+/backend/nb-configuration.xml
+
+# Backend Visual Studio Code
+/backend/.vscode
+/backend/.factorypath
+
+# Backend OSX
+/backend/.DS_Store
+
+# Backend Vim
+/backend/*.swp
+/backend/*.swo
+
+# Backend patch
+/backend/*.orig
+/backend/*.rej
+
+# Backend Local environment
+/backend/.env
+
+# Backend Plugin directory
+/backend/.quarkus/cli/plugins/
