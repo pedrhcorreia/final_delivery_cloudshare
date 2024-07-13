@@ -3,6 +3,7 @@ package isel.leic.resource;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.constraint.NotNull;
 import isel.leic.model.FileSharing;
+import isel.leic.model.FileSharingResponse;
 import isel.leic.service.FileSharingService;
 import isel.leic.utils.AuthorizationUtils;
 import jakarta.inject.Inject;
@@ -36,7 +37,7 @@ public class FileSharingResource {
 
         AuthorizationUtils.checkAuthorization(userId, securityContext.getUserPrincipal().getName());
 
-        List<FileSharing> sharedFiles = fileSharingService.getFilesSharedByUser(userId);
+        List<FileSharingResponse> sharedFiles = fileSharingService.getFilesSharedByUser(userId);
         LOGGER.info("HTTP 200 OK: Files shared by user with ID {} fetched successfully", userId);
         return Response.ok().entity(sharedFiles).build();
     }
@@ -51,7 +52,7 @@ public class FileSharingResource {
 
         LOGGER.info("Received request to fetch files shared to user with ID: {} ", sharedToUserId);
         AuthorizationUtils.checkAuthorization(sharedToUserId, securityContext.getUserPrincipal().getName());
-        List<FileSharing> sharedFiles = fileSharingService.getFilesSharedToUser(sharedToUserId);
+        List<FileSharingResponse> sharedFiles = fileSharingService.getFilesSharedToUser(sharedToUserId);
         LOGGER.info("HTTP 200 OK: Files shared to user with ID {} fetched successfully", sharedToUserId);
         return Response.ok().entity(sharedFiles).build();
     }
@@ -86,13 +87,13 @@ public class FileSharingResource {
     public Response deleteFileShare(
             @PathParam("id") @NotNull Long userId,
             @Context SecurityContext securityContext,
-            @NotNull Long fileShareId
+            @NotNull deleteShareRequest fileShareId
     ) {
         LOGGER.info("Received delete request for file share with ID: {}", fileShareId);
 
         AuthorizationUtils.checkAuthorization(userId, securityContext.getUserPrincipal().getName());
 
-        fileSharingService.unshareFile(fileShareId);
+        fileSharingService.unshareFile(fileShareId.fileShareId);
         LOGGER.info("HTTP 200 OK: File share {} deleted successfully.", fileShareId);
         return Response.ok().build();
     }
@@ -103,6 +104,9 @@ public class FileSharingResource {
             USER,
             GROUP
         }
+
+    }
+    public record deleteShareRequest(Long fileShareId){
 
     }
 }

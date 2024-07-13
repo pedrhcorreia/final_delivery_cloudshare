@@ -39,4 +39,9 @@ public class FileSharingRepository implements PanacheRepository<FileSharing> {
         List<FileSharing> fileSharings = list("sharedToGroupId", sharedToGroupId);
         return Optional.ofNullable(fileSharings.isEmpty() ? null : fileSharings);
     }
+    public Optional<List<FileSharing>> findBySharedByUserIdAndFilename(Long sharedByUserId, String currentFilename) {
+        List<FileSharing> fileSharings = find("sharedByUserId = ?1 AND filename = ?2", sharedByUserId, currentFilename)
+                    .list();
+        return Optional.ofNullable(fileSharings.isEmpty() ? null : fileSharings);
+    }
 }

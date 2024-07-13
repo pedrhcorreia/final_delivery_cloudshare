@@ -1,11 +1,22 @@
 export function getFileType(fileName: string) {
-    const extension = fileName.split('.').pop();
+    if (fileName.endsWith('/')) {
+        return 'Folder';
+    }
+
+    const lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+        return 'File'; 
+    }
+    const extension = fileName.slice(lastDotIndex + 1).toLowerCase();
     switch (extension) {
         case 'pdf':
             return 'PDF Document';
         case 'jpg':
         case 'jpeg':
         case 'png':
+        case 'gif':
+        case 'svg':
+        case 'webp':
             return 'Image';
         case 'mp3':
         case 'wav':
@@ -29,10 +40,6 @@ export function getFileType(fileName: string) {
             return 'ZIP Archive';
         case 'rar':
             return 'RAR Archive';
-        case 'gif':
-            return 'GIF Image';
-        case 'svg':
-            return 'SVG Image';
         case 'html':
         case 'htm':
             return 'HTML Document';
@@ -43,52 +50,69 @@ export function getFileType(fileName: string) {
         case 'json':
             return 'JSON File';
         default:
-            return 'Folder';
+            return 'Unknown Type';
     }
-};
+}
 
- 
+export function formatLastModified(isoDate: string) {
+    const date = new Date(isoDate);
+    return date.toLocaleString(); 
+  };
 export function getFileIcon(filename: string) {
-    const extension = filename.split('.').pop()?.toLowerCase();
+    
+    if (filename.endsWith('/')) {
+        return '/icons/folder-icon.png'; 
+    }
+    
+ 
+    const lastDotIndex = filename.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+        return '/icons/default-icon.png'; 
+    }
+    
+    const extension = filename.slice(lastDotIndex + 1).toLowerCase();
     switch (extension) {
         case 'jpg':
         case 'jpeg':
         case 'png':
-            return '/icons/png-icon.png';
         case 'gif':
-            return '/icons/image-icon.png';
+            return `/icons/png-icon.png`;
+        case 'svg':
+            return `/icons/svg-icon.png`;
+        case 'webp':
+            return `/icons/webp-icon.png`;
         case 'pdf':
-            return '/icons/pdf-icon.png';
+            return `/icons/pdf-icon.png`;
         case 'doc':
         case 'docx':
-            return '/icons/doc-icon.png';
+            return `/icons/doc-icon.png`;
         case 'xls':
         case 'xlsx':
-            return '/icons/xls-icon.png';
+            return `/icons/xls-icon.png`;
         case 'ppt':
         case 'pptx':
-            return '/icons/ppt-icon.png';
+            return `/icons/ppt-icon.png`;
         case 'zip':
-            return '/icons/zip-icon.png';
+            return `/icons/zip-icon.png`;
         case 'rar':
-            return '/icons/rar-icon.png';
+            return `/icons/rar-icon.png`;
         case 'txt':
-            return '/icons/txt-icon.png';
+            return `/icons/txt-icon.png`;
         case 'html':
         case 'htm':
-            return '/icons/html-icon.png';
+            return `/icons/html-icon.png`;
         case 'css':
-            return '/icons/css-icon.png';
-        case 'svg':
-            return '/icons/svg-icon.png';
+            return `/icons/css-icon.png`;
         case 'js':
-            return '/icons/js-icon.png';
+            return `/icons/js-icon.png`;
         case 'json':
-            return '/icons/json-icon.png';
+            return `/icons/json-icon.png`;
         default:
-            return '/icons/folder-icon.png';
+            return `/icons/default-icon.png`;
     }
-};
+}
+
+
 
 export const formatFileSize = (size: number): string => {
     if (size < 1024) {
@@ -114,5 +138,30 @@ export const extractFolderName = (filePath: string): string => {
 
     return parts[0];
   };
+
+  export const getCleanFileName = (file: string): string => {
+    if (file.endsWith('/')) {
+      file = file.slice(0, -1);
+    }
+    const segments = file.split('/');
+    return segments[segments.length - 1];
+  };
+
+  export const filterMissingFolder = (file:any , files: any, remaining: string ,i : number): boolean =>{
+     const remainSplit = remaining.split('/');
+    let x =0 ;
+    if(getFileType(file.objectKey)==="Folder"){
+        x = file.objectKey.length - remainSplit[remainSplit.length-2].length -1
+    }else{
+        x = file.objectKey.length - remainSplit[remainSplit.length-1].length 
+    }
+    if(!files.some((f: any) => f.objectKey ===  file.objectKey.substring(0,x))){
+        return true;
+    }
+    return false;
+
+  }
+  
+  
 
 

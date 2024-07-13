@@ -5,42 +5,53 @@ import Spinner from '../Spinner';
 interface FileGridProps {
   files: any[];
   selectedFile: any;
-  onFileClick: (file: any, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  hoveredFile: any;
+  onFileClick: (file: any, fileSharing: any | null, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  handleDragStart: (file: any, event: React.DragEvent<HTMLDivElement>) => void;
+  handleDragEnd: (file: any, event: React.DragEvent<HTMLDivElement>) => void;
+  handleDragOver: (file: any, event: React.DragEvent<HTMLDivElement>) => void;
   loading: boolean;
+  canFilesBeDragged: boolean;
 }
 
-const FileGrid: React.FC<FileGridProps> = ({ files, selectedFile, onFileClick, loading }) => {
+const FileGrid: React.FC<FileGridProps> = ({ files, selectedFile, hoveredFile, onFileClick, loading, handleDragEnd, handleDragOver, handleDragStart, canFilesBeDragged }) => {
   return (
     <div 
-      className="border border-gray-600 bg-gray-200 p-4 rounded grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto" 
+      className="border border-gray-600 bg-gray-200 p-2 rounded grid gap-2 overflow-y-auto"
       style={{ 
         maxHeight: 'calc(100vh - 250px)',
-        minHeight: '700px'
+        minHeight: '700px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gridAutoFlow: 'row dense'
       }}
     >
       {loading ? (
-        <div className="flex justify-center items-center w-full h-full" style={{ textAlign: 'center' }}>
-          <div style={{ marginLeft: '1100px' }}>
+        <div className="flex justify-center items-center w-full h-full" style={{  }}>
+          <div style={{ }}>
             <Spinner />
           </div>
         </div>
       ) : (
         files.length > 0 ? (
           files.map((file, index) => (
-            <div key={index} onClick={(event) => onFileClick(file, event)} style={{ maxWidth: '200px', maxHeight: '100px' }}>
+            <div key={index} onClick={(event) => onFileClick(file, file.fileSharing, event)} style={{ maxWidth: '200px', maxHeight: '170px' }}>
               <FileCard
                 objectKey={file.objectKey}
                 size={file.size}
                 isSelected={selectedFile === file}
-                onClick={(event) => onFileClick(file, event)} 
+                onClick={(event) => onFileClick(file, file.fileSharing, event)} 
+                onDragStart={(event) => handleDragStart(file, event)}
+                onDragEnd={(event) => handleDragEnd(file, event)}
+                onDragOver={(event) => handleDragOver(file, event)}
+                isHovered={hoveredFile === file}
+                isDraggable={canFilesBeDragged}
               />
             </div>
           ))
         ) : (
-
-          <p style={{ color: 'black', marginTop: '300px', marginLeft:'700px' }}>Empty</p>
-
-
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <p style={{ color: 'black' }}>Empty</p>
+            </div>
         )
       )}
     </div>

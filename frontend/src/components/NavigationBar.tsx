@@ -2,7 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eraseCookie, getCookie } from '../utils/cookies';
 
-const NavigationBar: React.FC = () => {
+interface NavigationBarProps {
+  onGroupsToggle: () => void;
+}
+
+const NavigationBar: React.FC<NavigationBarProps> = ({ onGroupsToggle }) => {
   const navigate = useNavigate();
   const username = getCookie('username');
 
@@ -20,8 +24,18 @@ const NavigationBar: React.FC = () => {
           <img src="/icons/user-icon.png" alt="User Icon" className="w-10 h-10" />
           <div className="text-xl text-white">{username}</div>
         </div>
+        <div className="absolute left-1/4 transform -translate-x-1/4 flex items-center">
+        <img src="/icons/group-icon.png" alt="Group Icon" className="w-10 h-10 rounded-full mr-2" />
+        <button
+          onClick={onGroupsToggle}
+          className="text-sm text-gray-300 hover:text-white focus:outline-none flex items-center"
+        >
+          <div className="text-xl text-white">Groups</div>
+        </button>
+      </div>
+
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <img src="/logo.png" alt="Logo" className="w-24 h-24" />
+          <img src="/icons/logo.png" alt="Logo" className="w-24 h-24" />
         </div>
         <button
           onClick={handleLogout}

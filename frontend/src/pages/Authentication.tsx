@@ -5,6 +5,7 @@ import { setCookie } from '../utils/cookies';
 import Spinner from '../components/Spinner';
 import Toast from '../components/Toast';
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9-]{3,20}$/;
 const Authentication = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +16,11 @@ const Authentication = () => {
   const handleRegister = async () => {
     setLoading(true);
     try {
+      if (!USERNAME_PATTERN.test(username)) {
+        throw new Error('Username must be 3-20 characters long, and may only contain letters, numbers, and hyphens.');
+      }else if(password.length < 5){
+        throw new Error('Password must be at least 5 characters long.');
+      }
       const response = await RegisterUser(username, password);
       console.log('User registered successfully:', response);
       setCookie('accessToken', response.token, 7);
@@ -52,7 +58,7 @@ const Authentication = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
-      <img src="/logo.png" alt="Logo" className="mb-8" width="400" height="400" />
+      <img src="/icons/logo.png" alt="Logo" className="mb-8" width="400" height="400" />
       <div className="max-w-md w-full bg-white p-8 shadow-md rounded">
         <form>
           <div className="mb-4">

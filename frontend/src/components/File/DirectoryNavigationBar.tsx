@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCurrentDir } from '../../CurrentDirContext';
 
 interface DirectoryNavigationBarProps {
   inputValue: string;
   handleSubmitValue: (value: string) => void;
+  handleArrowButtonClick: () => void;
+  handleSearchSubmit: (value: string) => void;
 }
 
-const DirectoryNavigationBar: React.FC<DirectoryNavigationBarProps> = ({ inputValue, handleSubmitValue }) => {
-  const {  setCurrentDir } = useCurrentDir(); 
+const DirectoryNavigationBar: React.FC<DirectoryNavigationBarProps> = ({ inputValue, handleSubmitValue, handleArrowButtonClick, handleSearchSubmit }) => {
+  const { setCurrentDir } = useCurrentDir(); 
   const navBarStart = ':/';
+  const [searchInput, setSearchInput] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleSubmitValue(event.target.value);
@@ -20,34 +23,27 @@ const DirectoryNavigationBar: React.FC<DirectoryNavigationBarProps> = ({ inputVa
         handleSubmitValue(navBarStart);
         setCurrentDir("");
       } else {
-
         let newValue = inputValue.replace(navBarStart, '');
-        
-
         newValue = newValue.trim().replace(/\s+\/$/, '/');
-        
 
         if (newValue.charAt(newValue.length - 1) !== '/') {
           newValue += '/';
         }
   
         handleSubmitValue(navBarStart + newValue);
-        setCurrentDir(newValue);
       }
     }
   };
 
-  const handleArrowButtonClick = () => {
-    let newValue = inputValue.slice(0, -1); 
-    for (let i = newValue.length - 1; i >= 0; i--) {
-      if (newValue[i] === '/') {
-        newValue = newValue.slice(0, i + 1);
-        break;
-      }
-    }
-    newValue = newValue.endsWith('/') ? newValue : newValue + '/';  
-    handleSubmitValue(newValue);
-    setCurrentDir(newValue.slice(2)); 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    setSearchInput(newValue);
+    handleSearchSubmit(newValue);
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    handleSearchSubmit('');
   };
 
   return (
@@ -60,11 +56,26 @@ const DirectoryNavigationBar: React.FC<DirectoryNavigationBarProps> = ({ inputVa
       </div>
       <input 
         type="text" 
-        className="text-left text-black font-semibold  border-none outline-none flex-grow" 
+        className="text-left text-black font-semibold border-none outline-none flex-grow" 
         value={inputValue}
         onChange={handleInputChange}
         onKeyPress={handleInputKeyPress}
       />
+      <div className="flex items-center ml-2 relative">
+        <img src='icons/magnifying-glass.png' alt="Search Icon" className="w-6 h-6 mr-1" />
+        <input 
+          type="text" 
+          className="text-left text-black font-semibold border-none outline-none" 
+          placeholder="Search"
+          value={searchInput}
+          onChange={handleSearchChange}
+        />
+        {searchInput && (
+          <button onClick={handleClearSearch} className="absolute right-0 mr-2 text-red-500">
+            X
+          </button>
+        )}
+      </div>
     </div>
   );
 };

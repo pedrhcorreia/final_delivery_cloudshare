@@ -18,7 +18,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Transactional
+
 @ApplicationScoped
 public class UserService {
 
@@ -40,7 +40,10 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
         return userOptional.orElse(null);
     }
-
+    public Optional<List<User>> findByUsernamePrefix(String prefix) {
+        LOGGER.info("Searching for users with username prefix: {}", prefix);
+        return userRepository.findByUsernamePrefix(prefix);
+    }
     public boolean existsById(Long id) {
         LOGGER.info("Checking if user exists with id: {}", id);
         return userRepository.findById(id) != null;
@@ -53,6 +56,7 @@ public class UserService {
         return users;
     }
 
+    @Transactional
     public User updatePassword(Long userId, String password) {
         if (userId == null || password == null) {
             throw new IllegalArgumentException("User ID and password cannot be null");
@@ -69,7 +73,7 @@ public class UserService {
         return user;
     }
 
-
+    @Transactional
     public User createUser(User user) {
         LOGGER.info("Persisting user: {}", user.getUsername());
         user.setPassword(AuthorizationUtils.encodePassword(user.getPassword()));
@@ -80,6 +84,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public void removeUser(Long userId) throws IllegalArgumentException {
         LOGGER.info("Removing user: {}", userId);
 

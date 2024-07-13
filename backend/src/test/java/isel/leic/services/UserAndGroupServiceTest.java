@@ -116,9 +116,20 @@ public class UserAndGroupServiceTest {
         assertEquals(1, usersFromGroup.size());
         userService.removeUser(user2.getId());
     }
-
     @Test
     @Order(7)
+    public void testUpdateGroupName() {
+        User user = userService.findByUsername("user1");
+        Group group = userService.findUserGroups(user.getId()).get(0);
+
+        groupService.updateGroupName(group.getId(), "TestGroupUpdate");
+
+        group = userService.findUserGroups(user.getId()).get(0);
+        assertEquals("TestGroupUpdate", group.getName());
+
+    }
+    @Test
+    @Order(8)
     public void testRemoveGroup() {
         User user = userService.findByUsername("user3");
         groupService.createGroup(user.getId(),"TestGroup2");
@@ -136,7 +147,7 @@ public class UserAndGroupServiceTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     public void testDeleteUser() {
         User user = userService.findByUsername("user1");
         User user3 = userService.findByUsername("user3");

@@ -18,6 +18,10 @@ public class GroupRepository implements PanacheRepository<Group> {
             return false;
         }
     }
+    public Optional<Group> findByIdOptional(Long id) {
+        Group group = findById(id);
+        return Optional.ofNullable(group);
+    }
 
     public Optional<List<Group>> findByCreatorId(Long creatorId) {
         List<Group> groups = list("creatorId", creatorId);

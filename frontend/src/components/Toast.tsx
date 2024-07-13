@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface ToastProps {
   message: string;
@@ -7,17 +7,6 @@ interface ToastProps {
 }
 
 const Toast: React.FC<ToastProps> = ({ message, onClose, type }) => {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-      onClose(); 
-    }, 10000); 
-
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
   const toastColors = {
     error: {
       bg: 'bg-red-100',
@@ -37,18 +26,16 @@ const Toast: React.FC<ToastProps> = ({ message, onClose, type }) => {
 
   return (
     <div
-      className={`fixed bottom-4 left-4 p-4 ${bg} ${text} z-50 transition-opacity duration-300 ${
-        visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
+      className={`fixed bottom-4 left-4 p-4 ${bg} ${text} z-50 transition-opacity duration-300`}
       style={{
         maxWidth: 'calc(100vw - 32px)',
         display: 'flex',
         alignItems: 'center',
-        borderRadius: '12px', 
-        border: '2px solid black', 
+        borderRadius: '12px',
+        border: '2px solid black',
       }}
     >
-      <div className="mr-2">{message}</div> 
+      <div className="mr-2">{message}</div>
       <button
         className="text-black rounded-full hover:bg-white hover:text-gray-800 transition-colors duration-300"
         onClick={onClose}
