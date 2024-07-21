@@ -187,13 +187,19 @@ public class FileSharingService {
     public boolean isFileSharedWithUser(Long ownerId, Long userId, String filename) {
         List<FileSharing> sharedFiles = fileSharingRepository.findBySharedByUserId(ownerId)
                 .orElse(Collections.emptyList());
-
         for (FileSharing fileSharing : sharedFiles) {
-            if (fileSharing.getFilename().equals(filename) && fileSharing.getSharedToUserId().equals(userId)) {
-                return false;
+            String sharedFilename = fileSharing.getFilename();
+            Long sharedToUserId = fileSharing.getSharedToUserId();
+            if (sharedToUserId.equals(userId)) {
+                if (filename.equals(sharedFilename)) {
+                    return true;
+                }
+                if (sharedFilename.endsWith("/") && filename.startsWith(sharedFilename)) {
+                    return true;
+                }
             }
         }
 
-        return true;
+        return false;
     }
 }
